@@ -83,7 +83,7 @@ export function DataTable<TData, TValue>({
             variant="outline"
             className="font-normal text-xs gap-2">
             <Trash className="size-4" />
-            Delete
+            Delete ({table.getFilteredSelectedRowModel().rows.length})
           </Button>
         )}
       </div>
