@@ -1,6 +1,7 @@
 "use client";
 
 import { columns } from "@/app/(dashboard)/accounts/columns";
+import { useBulkDeleteAccounts } from "@/features/accounts/api/use-bulk-delete";
 import { useNewAccount } from "@/features/accounts/hooks/use-new-account";
 
 import { Loader2, Plus } from "lucide-react";
@@ -14,7 +15,9 @@ import { useGetAccounts } from "@/features/accounts/api/use-get-accounts";
 const AccountsPage = () => {
   const { onOpen } = useNewAccount();
   const accountsQuery = useGetAccounts();
+  const deleteAccounts = useBulkDeleteAccounts();
   const accounts = accountsQuery.data || [];
+  const isDisabled = accountsQuery.isLoading || deleteAccounts.isPending;
 
   return (
     <div className="max-w-screen-2xl mx-auto w-full pb-10 -mt-24">
@@ -44,8 +47,12 @@ const AccountsPage = () => {
               filterKey="email"
               columns={columns}
               data={accounts}
-              onDelete={() => {}}
-              disabled={false}
+              onDelete={(row) => {
+                deleteAccounts.mutate({
+                  ids: row.map((r) => r.original.id),
+                });
+              }}
+              disabled={isDisabled}
             />
           )}
         </CardContent>
